@@ -6,6 +6,7 @@ class Pokemon(models.Model):
     photo = models.ImageField(
         upload_to='pokemon_images',
         null=True,
+        blank=True
     )
 
     def __str__(self):
@@ -20,14 +21,14 @@ class PokemonEntity(models.Model):
     longitude = models.FloatField('lat')
     latitude = models.FloatField('lon')
 
-    appeared_at = models.DateTimeField()
-    disappeared_at = models.DateTimeField()
+    appeared_at = models.DateTimeField(null=True, blank=True)
+    disappeared_at = models.DateTimeField(null=True, blank=True)
 
-    level = models.IntegerField()
-    health = models.IntegerField()
-    strength = models.IntegerField()
-    defence = models.IntegerField()
-    stigma = models.IntegerField()
+    level = models.IntegerField(blank=True)
+    health = models.IntegerField(blank=True)
+    strength = models.IntegerField(blank=True)
+    defence = models.IntegerField(blank=True)
+    stigma = models.IntegerField(blank=True)
 
     def __str__(self):
         return self.pokemon.name
