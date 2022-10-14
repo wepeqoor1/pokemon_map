@@ -18,8 +18,8 @@ class PokemonEntity(models.Model):
         Pokemon,
         on_delete=models.CASCADE,
     )
-    longitude = models.FloatField('lat')
-    latitude = models.FloatField('lon')
+    latitude = models.FloatField('lat')
+    longitude = models.FloatField('lon')
 
     appeared_at = models.DateTimeField(null=True, blank=True)
     disappeared_at = models.DateTimeField(null=True, blank=True)
@@ -31,4 +31,4 @@ class PokemonEntity(models.Model):
     stigma = models.IntegerField(blank=True)
 
     def __str__(self):
-        return self.pokemon.name
+        return self.pokemon.title
