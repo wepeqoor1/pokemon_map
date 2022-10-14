@@ -1,8 +1,10 @@
-import folium
+import folium  # type: ignore
 import json
 
 from django.http import HttpResponseNotFound
-from django.shortcuts import render
+from django.shortcuts import render, get_list_or_404
+
+from .models import Pokemon, PokemonEntity
 
 
 MOSCOW_CENTER = [55.751244, 37.618423]
@@ -39,12 +41,14 @@ def show_all_pokemons(request):
                 pokemon['img_url']
             )
 
+    pokemons = get_list_or_404(Pokemon)
     pokemons_on_page = []
     for pokemon in pokemons:
+        print(pokemon.photo.url)
         pokemons_on_page.append({
-            'pokemon_id': pokemon['pokemon_id'],
-            'img_url': pokemon['img_url'],
-            'title_ru': pokemon['title_ru'],
+            'pokemon_id': pokemon.id,
+            'img_url': pokemon.photo.url,
+            'title_ru': pokemon.title,
         })
 
     return render(request, 'mainpage.html', context={
