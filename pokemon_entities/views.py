@@ -4,7 +4,6 @@ from django.shortcuts import render, get_list_or_404
 from django.utils.timezone import localtime
 from .models import Pokemon, PokemonEntity
 
-
 MOSCOW_CENTER = [55.751244, 37.618423]
 DEFAULT_IMAGE_URL = (
     'https://vignette.wikia.nocookie.net/pokemon/images/6/6e/%21.png/revision'
@@ -66,7 +65,7 @@ def show_pokemon(request, pokemon_id):
         pokemon_id=pokemon_id,
         appeared_at__lt=localtime(),
         disappeared_at__gt=localtime()
-        )
+    )
 
     for pokemon_entity in pokemon_entities:
         add_pokemon(
@@ -79,13 +78,22 @@ def show_pokemon(request, pokemon_id):
         )
     pokemon = Pokemon.objects.get(id=int(pokemon_id))
     pokemon_on_page = {
-            'pokemon_id': pokemon.id,
-            'img_url': pokemon.photo.url,
-            'title_ru': pokemon.title,
-            'description': pokemon.description,
-            'title_en': pokemon.title_en,
-            'title_jp': pokemon.title_jp,
+        'pokemon_id': pokemon.id,
+        'img_url': pokemon.photo.url,
+        'title_ru': pokemon.title,
+        'description': pokemon.description,
+        'title_en': pokemon.title_en,
+        'title_jp': pokemon.title_jp,
+        'previous_evolution': None
+    }
+    previous_evolution = Pokemon.objects.filter(id=pokemon.previous_evolution_id).first()
+    if previous_evolution:
+        previous_evolution = {
+            'pokemon_id': previous_evolution.id,
+            'title_ru': previous_evolution.title,
+            'img_url': previous_evolution.photo.url,
         }
+        pokemon_on_page['previous_evolution'] = previous_evolution
 
     return render(request, 'pokemon.html', context={
         'map': folium_map._repr_html_(), 'pokemon': pokemon_on_page
