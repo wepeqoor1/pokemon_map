@@ -8,6 +8,7 @@ class Pokemon(models.Model):
         null=True,
         blank=True
     )
+    description = models.TextField('Описание', default='Описание покемона')
 
     def __str__(self):
         return self.title
