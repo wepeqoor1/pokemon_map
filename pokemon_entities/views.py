@@ -32,7 +32,6 @@ def show_all_pokemons(request):
     pokemons_entity = PokemonEntity.objects.filter(
         appeared_at__lt=localtime(),
         disappeared_at__gt=localtime(),
-        is_delete=False
     )
 
     for pokemon_entity in pokemons_entity:
@@ -45,7 +44,7 @@ def show_all_pokemons(request):
             )
         )
 
-    pokemons = Pokemon.objects.filter(is_delete=False).all()
+    pokemons = Pokemon.objects.filter().all()
     if not pokemons:
         return HttpResponseNotFound('<h1>Покемоны отсутствуют</h1>')
 
@@ -64,8 +63,7 @@ def show_all_pokemons(request):
 
 
 def show_pokemon(request, pokemon_id):
-    pokemon = Pokemon.objects.filter(id=pokemon_id, is_delete=False).first()
-    print(f'{pokemon=}')
+    pokemon = Pokemon.objects.filter(id=pokemon_id).first()
     if not pokemon:
         return HttpResponseNotFound('<h1>Такой покемон не найден</h1>')
 

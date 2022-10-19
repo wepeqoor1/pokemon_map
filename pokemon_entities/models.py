@@ -20,10 +20,6 @@ class Pokemon(models.Model):
     description = models.TextField(
         verbose_name='Описание'
     )
-    is_delete = models.BooleanField(
-        verbose_name='Покемон удален?',
-        default=False
-    )
 
     def __str__(self):
         return self.title
