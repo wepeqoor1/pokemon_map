@@ -35,14 +35,14 @@ class PokemonEntity(models.Model):
     latitude = models.FloatField(verbose_name='Широта')
     longitude = models.FloatField(verbose_name='Долгота')
 
-    appeared_at = models.DateTimeField(null=True, blank=True, verbose_name='Время появления покемона')
-    disappeared_at = models.DateTimeField(null=True, blank=True, verbose_name='Время исчезновения покемона')
+    appeared_at = models.DateTimeField(null=True, verbose_name='Время появления покемона')
+    disappeared_at = models.DateTimeField(null=True, verbose_name='Время исчезновения покемона')
 
-    level = models.IntegerField(verbose_name='Уровень', blank=True)
-    health = models.IntegerField(verbose_name='Здоровье', blank=True)
-    strength = models.IntegerField(verbose_name='Сила', blank=True)
-    defence = models.IntegerField(verbose_name='Защита', blank=True)
-    stigma = models.IntegerField(verbose_name='Выносливость', blank=True)
+    level = models.IntegerField(verbose_name='Уровень', blank=True, null=True)
+    health = models.IntegerField(verbose_name='Здоровье', blank=True, null=True)
+    strength = models.IntegerField(verbose_name='Сила', blank=True, null=True)
+    defence = models.IntegerField(verbose_name='Защита', blank=True, null=True)
+    stigma = models.IntegerField(verbose_name='Выносливость', blank=True, null=True)
 
     def __str__(self):
         return self.pokemon.title
