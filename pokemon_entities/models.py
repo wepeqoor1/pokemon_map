@@ -1,5 +1,5 @@
 from django.db import models  # type: ignore
-
+from django.utils.timezone import localtime
 
 class Pokemon(models.Model):
     title = models.CharField(verbose_name='Название', max_length=200)
@@ -43,4 +43,5 @@ class PokemonEntity(models.Model):
     stigma = models.IntegerField(verbose_name='Выносливость', blank=True, null=True)
 
     def __str__(self):
-        return self.pokemon.title
+        is_vision = self.appeared_at < localtime() < self.disappeared_at
+        return f'{self.pokemon.title} {f"Покемон виден" if is_vision else "Покемона нет"}'
