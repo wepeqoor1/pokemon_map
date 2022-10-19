@@ -45,7 +45,10 @@ def show_all_pokemons(request):
             )
         )
 
-    pokemons = get_list_or_404(Pokemon)
+    pokemons = Pokemon.objects.all()
+    if not pokemons:
+        return HttpResponseNotFound('<h1>Покемоны отсутствуют</h1>')
+
     pokemons_on_page = []
     for pokemon in pokemons:
         pokemons_on_page.append({
