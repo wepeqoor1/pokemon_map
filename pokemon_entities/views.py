@@ -64,19 +64,20 @@ def show_all_pokemons(request):
 
 
 def show_pokemon(request, pokemon_id):
-    try:
-        pokemon = Pokemon.objects.get(id=pokemon_id, is_delete=False)
-    except ObjectDoesNotExist:
+    pokemon = Pokemon.objects.filter(id=pokemon_id, is_delete=False).first()
+    print(f'{pokemon=}')
+    if not pokemon:
         return HttpResponseNotFound('<h1>Такой покемон не найден</h1>')
 
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
 
-    pokemon_entities = get_list_or_404(
-        PokemonEntity,
+    pokemon_entities = PokemonEntity.objects.filter(
         pokemon_id=pokemon_id,
         appeared_at__lt=localtime(),
         disappeared_at__gt=localtime()
     )
+    if not pokemon_entities:
+        return HttpResponseNotFound(f'<h1>Покемон {pokemon} отсутствует на карте</h1>')
 
     for pokemon_entity in pokemon_entities:
         add_pokemon(
