@@ -1,4 +1,6 @@
 import folium  # type: ignore
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponseNotFound
 
 from django.shortcuts import render, get_list_or_404
 from django.utils.timezone import localtime
@@ -58,6 +60,11 @@ def show_all_pokemons(request):
 
 
 def show_pokemon(request, pokemon_id):
+    try:
+        pokemon = Pokemon.objects.get(id=pokemon_id)
+    except ObjectDoesNotExist:
+        return HttpResponseNotFound('<h1>Такой покемон не найден</h1>')
+
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
 
     pokemon_entities = get_list_or_404(
@@ -76,7 +83,6 @@ def show_pokemon(request, pokemon_id):
                 pokemon_entity.pokemon.photo.url
             )
         )
-    pokemon = Pokemon.objects.get(id=int(pokemon_id))
     pokemon_on_page = {
         'pokemon_id': pokemon.id,
         'img_url': pokemon.photo.url,
@@ -84,16 +90,25 @@ def show_pokemon(request, pokemon_id):
         'description': pokemon.description,
         'title_en': pokemon.title_en,
         'title_jp': pokemon.title_jp,
-        'previous_evolution': None
+        'previous_evolution': None,
+        'next_evolution': None,
     }
-    previous_evolution = Pokemon.objects.filter(id=pokemon.previous_evolution_id).first()
-    if previous_evolution:
-        previous_evolution = {
-            'pokemon_id': previous_evolution.id,
-            'title_ru': previous_evolution.title,
-            'img_url': previous_evolution.photo.url,
+    if pokemon.previous_evolution:
+        previous_evolution_pokemon = {
+            'pokemon_id': pokemon.previous_evolution.id,
+            'title_ru': pokemon.previous_evolution.title,
+            'img_url': pokemon.previous_evolution.photo.url,
         }
-        pokemon_on_page['previous_evolution'] = previous_evolution
+        pokemon_on_page['previous_evolution'] = previous_evolution_pokemon
+
+    pokemon_next_evolution = pokemon.next_evolution.first()
+    if pokemon_next_evolution:
+        next_evolution_pokemon = {
+            'pokemon_id': pokemon_next_evolution.id,
+            'title_ru': pokemon_next_evolution.title,
+            'img_url': pokemon_next_evolution.photo.url,
+        }
+        pokemon_on_page['next_evolution'] = next_evolution_pokemon
 
     return render(request, 'pokemon.html', context={
         'map': folium_map._repr_html_(), 'pokemon': pokemon_on_page

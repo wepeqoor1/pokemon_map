@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models  # type: ignore
 
 
 class Pokemon(models.Model):
@@ -7,11 +7,11 @@ class Pokemon(models.Model):
     title_jp = models.CharField('Название на Японском', max_length=200)
     previous_evolution = models.ForeignKey(
         'self',
+        related_name='next_evolution',
         on_delete=models.PROTECT,
         null=True,
         blank=True
     )
-
     photo = models.ImageField(
         upload_to='pokemon_images',
         null=True,
