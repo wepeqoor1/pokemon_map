@@ -2,9 +2,9 @@ from django.db import models  # type: ignore
 
 
 class Pokemon(models.Model):
-    title = models.CharField('Название', max_length=200)
-    title_en = models.CharField('Название на Английском', max_length=200)
-    title_jp = models.CharField('Название на Японском', max_length=200)
+    title = models.CharField(verbose_name='Название', max_length=200)
+    title_en = models.CharField(verbose_name='Название на Английском', max_length=200)
+    title_jp = models.CharField(verbose_name='Название на Японском', max_length=200)
     previous_evolution = models.ForeignKey(
         'self',
         related_name='next_evolution',
@@ -15,9 +15,13 @@ class Pokemon(models.Model):
     photo = models.ImageField(
         upload_to='pokemon_images',
         null=True,
-        blank=True
+        blank=True,
+        verbose_name='Фото покемона'
     )
-    description = models.TextField('Описание', default='Описание покемона')
+    description = models.TextField(
+        verbose_name='Описание',
+        default='Описание покемона'
+    )
 
     def __str__(self):
         return self.title
@@ -28,17 +32,17 @@ class PokemonEntity(models.Model):
         Pokemon,
         on_delete=models.CASCADE,
     )
-    latitude = models.FloatField('lat')
-    longitude = models.FloatField('lon')
+    latitude = models.FloatField(verbose_name='Широта')
+    longitude = models.FloatField(verbose_name='Долгота')
 
-    appeared_at = models.DateTimeField(null=True, blank=True)
-    disappeared_at = models.DateTimeField(null=True, blank=True)
+    appeared_at = models.DateTimeField(null=True, blank=True, verbose_name='Время появления покемона')
+    disappeared_at = models.DateTimeField(null=True, blank=True, verbose_name='Время исчезновения покемона')
 
-    level = models.IntegerField(blank=True)
-    health = models.IntegerField(blank=True)
-    strength = models.IntegerField(blank=True)
-    defence = models.IntegerField(blank=True)
-    stigma = models.IntegerField(blank=True)
+    level = models.IntegerField(verbose_name='Уровень', blank=True)
+    health = models.IntegerField(verbose_name='Здоровье', blank=True)
+    strength = models.IntegerField(verbose_name='Сила', blank=True)
+    defence = models.IntegerField(verbose_name='Защита', blank=True)
+    stigma = models.IntegerField(verbose_name='Выносливость', blank=True)
 
     def __str__(self):
         return self.pokemon.title
