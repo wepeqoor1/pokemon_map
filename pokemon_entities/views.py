@@ -101,7 +101,7 @@ def show_pokemon(request, pokemon_id):
         }
         pokemon_on_page['previous_evolution'] = previous_evolution_pokemon
 
-    pokemon_next_evolution = pokemon.next_evolution.first()
+    pokemon_next_evolution = pokemon.next_evolutions.first()
     if pokemon_next_evolution:
         next_evolution_pokemon = {
             'pokemon_id': pokemon_next_evolution.id,
