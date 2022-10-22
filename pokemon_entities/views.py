@@ -45,7 +45,7 @@ def show_all_pokemons(request):
             )
         )
 
-    pokemons = Pokemon.objects.filter().all()
+    pokemons = Pokemon.objects.all()
     if not pokemons:
         return HttpResponseNotFound('<h1>Покемоны отсутствуют</h1>')
 
