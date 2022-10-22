@@ -18,7 +18,8 @@ class Pokemon(models.Model):
         verbose_name='Фото покемона'
     )
     description = models.TextField(
-        verbose_name='Описание'
+        verbose_name='Описание',
+        blank=True
     )
 
     def __str__(self):
