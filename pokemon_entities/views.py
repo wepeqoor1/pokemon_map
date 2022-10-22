@@ -1,8 +1,8 @@
 import folium  # type: ignore
-from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseNotFound
 
-from django.shortcuts import render, get_list_or_404
+from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import render
 from django.utils.timezone import localtime
 from .models import Pokemon, PokemonEntity
 
@@ -29,6 +29,8 @@ def add_pokemon(folium_map, lat, lon, image_url=DEFAULT_IMAGE_URL):
 
 def show_all_pokemons(request):
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
+
+    pokemons = Pokemon.objects.all()
     local_time = localtime()
     pokemons_entity = PokemonEntity.objects.filter(
         appeared_at__lt=local_time,
@@ -45,10 +47,6 @@ def show_all_pokemons(request):
             )
         )
 
-    pokemons = Pokemon.objects.all()
-    if not pokemons:
-        return HttpResponseNotFound('<h1>Покемоны отсутствуют</h1>')
-
     pokemons_on_page = []
     for pokemon in pokemons:
         pokemons_on_page.append({
@@ -56,7 +54,6 @@ def show_all_pokemons(request):
             'img_url': pokemon.photo.url,
             'title_ru': pokemon.title_ru,
         })
-
     return render(request, 'mainpage.html', context={
         'map': folium_map._repr_html_(),
         'pokemons': pokemons_on_page,
@@ -80,13 +77,12 @@ def show_pokemon(request, pokemon_id):
 
     if not pokemon:
         return HttpResponseNotFound('<h1>Такой покемон не найден</h1>')
-
+    local_time = localtime()
     pokemon_entities = pokemon.entities.filter(
-        appeared_at__lt=localtime(),
-        disappeared_at__gt=localtime()
+        appeared_at__lt=local_time,
+        disappeared_at__gt=local_time
     )
     if not pokemon_entities:
-        # return HttpResponseNotFound(f'<h1>Покемон {pokemon} отсутствует на карте</h1>')
         pokemon_on_page['entities'] = None
         return render(request, 'pokemon.html', context={
             'map': folium_map._repr_html_(), 'pokemon': pokemon_on_page
