@@ -54,7 +54,7 @@ def show_all_pokemons(request):
         pokemons_on_page.append({
             'pokemon_id': pokemon.id,
             'img_url': pokemon.photo.url,
-            'title_ru': pokemon.title,
+            'title_ru': pokemon.title_ru,
         })
 
     return render(request, 'mainpage.html', context={
@@ -64,18 +64,33 @@ def show_all_pokemons(request):
 
 
 def show_pokemon(request, pokemon_id):
+    folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
     pokemon = Pokemon.objects.filter(id=pokemon_id).first()
+    pokemon_on_page = {
+        'pokemon_id': pokemon.id,
+        'img_url': pokemon.photo.url,
+        'title_ru': pokemon.title_ru,
+        'description': pokemon.description,
+        'title_en': pokemon.title_en,
+        'title_jp': pokemon.title_jp,
+        'previous_evolution': None,
+        'next_evolution': None,
+        'entities': True
+    }
+
     if not pokemon:
         return HttpResponseNotFound('<h1>Такой покемон не найден</h1>')
-
-    folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
 
     pokemon_entities = pokemon.entities.filter(
         appeared_at__lt=localtime(),
         disappeared_at__gt=localtime()
     )
     if not pokemon_entities:
-        return HttpResponseNotFound(f'<h1>Покемон {pokemon} отсутствует на карте</h1>')
+        # return HttpResponseNotFound(f'<h1>Покемон {pokemon} отсутствует на карте</h1>')
+        pokemon_on_page['entities'] = None
+        return render(request, 'pokemon.html', context={
+            'map': folium_map._repr_html_(), 'pokemon': pokemon_on_page
+        })
 
     for pokemon_entity in pokemon_entities:
         add_pokemon(
@@ -86,20 +101,11 @@ def show_pokemon(request, pokemon_id):
                 pokemon_entity.pokemon.photo.url
             )
         )
-    pokemon_on_page = {
-        'pokemon_id': pokemon.id,
-        'img_url': pokemon.photo.url,
-        'title_ru': pokemon.title,
-        'description': pokemon.description,
-        'title_en': pokemon.title_en,
-        'title_jp': pokemon.title_jp,
-        'previous_evolution': None,
-        'next_evolution': None,
-    }
+
     if pokemon.previous_evolution:
         previous_evolution_pokemon = {
             'pokemon_id': pokemon.previous_evolution.id,
-            'title_ru': pokemon.previous_evolution.title,
+            'title_ru': pokemon.previous_evolution.title_ru,
             'img_url': pokemon.previous_evolution.photo.url,
         }
         pokemon_on_page['previous_evolution'] = previous_evolution_pokemon
@@ -108,7 +114,7 @@ def show_pokemon(request, pokemon_id):
     if pokemon_next_evolution:
         next_evolution_pokemon = {
             'pokemon_id': pokemon_next_evolution.id,
-            'title_ru': pokemon_next_evolution.title,
+            'title_ru': pokemon_next_evolution.title_ru,
             'img_url': pokemon_next_evolution.photo.url,
         }
         pokemon_on_page['next_evolution'] = next_evolution_pokemon

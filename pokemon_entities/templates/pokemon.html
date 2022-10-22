@@ -71,9 +71,11 @@
         {% endif %}
       </div>
     </div>
-
-
-    <h1 class="mt-5 mb-2">Карта {{pokemon.title}} в Москве</h1>
+    {% if pokemon.entities %}
+      <h1 class="mt-5 mb-2">Карта покемона "{{pokemon.title_ru}}" в Москве</h1>
+    {% else %}
+      <h1 class="mt-5 mb-2">Покемона "{{pokemon.title_ru}}" нет на карте</h1>
+    {% endif %}
     <div class="mb-5">
       {{map|safe}}  
     </div>
