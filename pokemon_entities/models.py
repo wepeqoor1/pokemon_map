@@ -23,7 +23,7 @@ class Pokemon(models.Model):
     )
 
     def __str__(self):
-        return self.title
+        return self.title_ru
 
 
 class PokemonEntity(models.Model):
@@ -46,4 +46,4 @@ class PokemonEntity(models.Model):
 
     def __str__(self):
         is_vision = self.appeared_at < localtime() < self.disappeared_at
-        return f'{self.pokemon.title} {f"Покемон виден" if is_vision else "Покемона нет"}'
+        return f'{self.pokemon.title_ru} {f"Покемон виден" if is_vision else "Покемона нет"}'
