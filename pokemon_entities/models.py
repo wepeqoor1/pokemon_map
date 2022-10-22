@@ -3,7 +3,7 @@ from django.utils.timezone import localtime
 
 
 class Pokemon(models.Model):
-    title = models.CharField(verbose_name='Название', max_length=200)
+    title_ru = models.CharField(verbose_name='Название', max_length=200)
     title_en = models.CharField(verbose_name='Название на Английском', max_length=200, blank=True)
     title_jp = models.CharField(verbose_name='Название на Японском', max_length=200, blank=True)
     previous_evolution = models.ForeignKey(
